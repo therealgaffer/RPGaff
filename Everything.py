@@ -20,7 +20,7 @@ class Creature:
         def calculate_hit(attacker, defender):
 
             # Formula for deciding hit chance
-            hit_percent = round((attacker.attack / (attacker.attack + defender.defence * 0.25) * 0.95) * 100, 1)
+            hit_percent = round((attacker.attack / (attacker.attack + defender.defence * 0.25) * 0.8) * 100, 1)
             print (
                 "{}'s attack is {} and {}'s defence is {} meaning a {}% chance to hit".format(
                     attacker.name, attacker.attack, defender.name, defender.defence, hit_percent
@@ -69,9 +69,22 @@ def pick_race():
         return "Dwarf"
 
 races = ["Human", "Orc", "Elf", "Dwarf"]
+names = ["Barry", "Luke", "Mike"]
 
-PC = Creature(name_yourself(), pick_race(), random.randint(80, 120), random.randint(20, 30), random.randint(20, 30))
-NPC = Creature("Nameless NPC", random.choice(races), random.randint(80, 120), random.randint(1, 20), random.randint(1, 15))
+PC = Creature(
+    name_yourself(),
+    pick_race(),
+    random.randint(80, 120),
+    float(random.randint(20, 300)),
+    float(random.randint(20, 300))
+)
+NPC = Creature(
+    "{} the NPC".format(random.choice(names)),
+    random.choice(races),
+    random.randint(80, 120),
+    float(random.randint(10, 20)),
+    float(random.randint(10, 20))
+)
 
 print ("Player race: {} attack:{} defence:{}".format(PC.race, PC.attack, PC.defence))
 print ("Monster race: {} attack:{} defence:{}".format(NPC.race, NPC.attack, NPC.defence))
