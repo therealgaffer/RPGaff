@@ -14,7 +14,33 @@ class Creature:
         self.defence = defence
         self.creatures.add(weakref.ref(self))
 
+        if self.race == "Orc":
+            self.max_health *= 1.5
+            self.attack *= 1.8
+            self.defence *= 0.6
+        elif self.race == "Elf":
+            self.max_health *= 0.8
+            self.attack *= 1.6
+            self.defence *= 1.6
+        elif self.race == "Human":
+            self.max_health *= 1
+            self.attack *= 1.2
+            self.defence *= 1.0
+        elif self.race == "Dwarf":
+            self.max_health *= 1.8
+            self.attack *= 0.7
+            self.defence *= 1.8
+
+        self.current_health = self.max_health
+
+
     def attack_target(self, target):
+
+        # Roll damage and apply to targets health
+        def take_health(x):
+            damage = random.randint(1, 20)
+            x.current_health -= damage
+            print("{} is it for {}. Remaining health: {}".format(x.name, damage, x.current_health))
 
         # Calculate the chance of attacker hitting the defender
         def calculate_hit(attacker, defender):
@@ -32,6 +58,7 @@ class Creature:
             print ("Random roll = {}".format(randint))
             if randint < hit_percent:
                 print ("{} sucessfully lands a hit on {}!".format(attacker.name, defender.name))
+                take_health(defender)
             else:
                 print ("{} misses their swing at {}!".format(attacker.name, defender.name))
 
@@ -44,6 +71,7 @@ class Creature:
 
         print ("{} counter-attacks!".format(target.name))
         calculate_hit(target, self)
+
 
 
 def name_yourself():
@@ -71,22 +99,41 @@ def pick_race():
 races = ["Human", "Orc", "Elf", "Dwarf"]
 names = ["Barry", "Luke", "Mike"]
 
+# Make a couple of characters
 PC = Creature(
     name_yourself(),
     pick_race(),
-    random.randint(80, 120),
-    float(random.randint(20, 300)),
-    float(random.randint(20, 300))
+    float(random.randint(80, 100)),
+    float(random.randint(30, 50)),
+    float(random.randint(30, 50))
 )
 NPC = Creature(
     "{} the NPC".format(random.choice(names)),
     random.choice(races),
-    random.randint(80, 120),
-    float(random.randint(10, 20)),
-    float(random.randint(10, 20))
+    float(random.randint(80, 100)),
+    float(random.randint(30, 50)),
+    float(random.randint(30, 50))
 )
 
-print ("Player race: {} attack:{} defence:{}".format(PC.race, PC.attack, PC.defence))
-print ("Monster race: {} attack:{} defence:{}".format(NPC.race, NPC.attack, NPC.defence))
+print ("Player race: {} attack:{} defence:{} hp:{}/{}".format(PC.race, PC.attack, PC.defence, PC.max_health, PC.current_health))
+print ("Monster race: {} attack:{} defence:{} hp:{}/{}".format(NPC.race, NPC.attack, NPC.defence, NPC.max_health, NPC.current_health))
 
-PC.attack_target(NPC)
+# Game Loop
+while True:
+
+    while True:
+        answer = raw_input("Would you like to Attack, or Quit? [A, Q]")
+        if answer not in ("A", "Q"):
+            print ("Please answer A or Q")
+        else:
+            break
+
+    if answer == "A":
+        PC.attack_target(NPC)
+
+        print ("{} hp:{}/{}".format(PC.name, PC.current_health, PC.max_health))
+        print ("{} hp:{}/{}".format(PC.name, NPC.current_health, NPC.max_health))
+
+    else:
+        print ("Alright FINE, BYE")
+        break
